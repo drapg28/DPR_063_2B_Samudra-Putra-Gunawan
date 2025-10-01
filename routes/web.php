@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AnggotaDPRController; 
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,26 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+    
 });
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+/*
+|--------------------------------------------------------------------------
+| Rute Admin (CRUD Penuh) - Membutuhkan 'auth' & 'role:admin'
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+    
+    // Dashboard Admin (Tujuan ADMIN_DASHBOARD)
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // CRUD Anggota DPR
+    // Menggunakan AnggotaDPRController.php
+    Route::resource('anggota', AnggotaDPRController::class)->names('anggota');
+});
+

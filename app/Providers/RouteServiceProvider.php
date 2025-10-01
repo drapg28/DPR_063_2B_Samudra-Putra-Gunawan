@@ -17,7 +17,14 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/dashboard';
+
+    /**
+     * Tambahkan konstanta ini untuk pengalihan Admin
+     *
+     * @var string
+     */
+    public const ADMIN_DASHBOARD = '/admin/dashboard'; // [!code ++]
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -35,6 +42,9 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+
+            // Memuat Auth Routes yang berisi rute GET dan POST untuk /login [!code ++]
+            require base_path('routes/auth.php'); // [!code ++]
         });
     }
 

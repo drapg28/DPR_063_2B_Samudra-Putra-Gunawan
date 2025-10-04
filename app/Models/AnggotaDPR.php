@@ -25,7 +25,7 @@ class AnggotaDPR extends Model
         'gelar_depan',
         'gelar_belakang',
         'jabatan',
-        'status_pernikahan',
+        'status_pernikahan', // ENUM: Kawin, Belum Kawin, Cerai Hidup, Cerai Mati
         'jumlah_anak',
     ];
 
@@ -34,7 +34,7 @@ class AnggotaDPR extends Model
         'jumlah_anak' => 'integer',
     ];
 
-    // Relasi ke tabel penggajian
+    // Relasi ke tabel penggajian (untuk ke depannya)
     public function komponenGaji()
     {
         return $this->belongsToMany(
@@ -45,7 +45,7 @@ class AnggotaDPR extends Model
         );
     }
 
-    // Accessor untuk nama lengkap dengan gelar
+    // Accessor untuk nama lengkap dengan gelar (sudah ada)
     public function getNamaLengkapAttribute()
     {
         $nama = '';
@@ -60,6 +60,6 @@ class AnggotaDPR extends Model
             $nama .= ', ' . $this->gelar_belakang;
         }
         
-        return $nama;
+        return trim($nama);
     }
 }

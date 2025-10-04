@@ -6,7 +6,6 @@
     <title>Ubah Data Penggajian</title>
     <style>
         body { font-family: sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
-        
         /* CSS yang diperlukan (diambil dari create.blade.php) */
         .navbar { background-color: #ffffff; padding: 1rem 2rem; border-bottom: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .navbar-content { display: flex; justify-content: space-between; align-items: center; max-width: 1280px; margin: 0 auto; }
@@ -58,6 +57,7 @@
 
         <a href="{{ route('payrolls.index') }}" class="back-link">← Kembali ke Data Penggajian</a>
         
+        {{-- Form untuk PUT request ke PayrollController@update --}}
         <form method="POST" action="{{ route('payrolls.update', $anggota->id_anggota) }}">
             @csrf
             @method('PUT')
@@ -73,7 +73,7 @@
                 <div class="checkbox-group">
                     @foreach($components as $component)
                         @php
-                            // Cek apakah komponen ini sudah dipilih sebelumnya atau di form submission gagal
+                            // Cek apakah komponen ini sudah dipilih (lama atau dari old input)
                             $checked = in_array($component->id_komponen_gaji, old('id_komponen_gaji', $selected_components));
                         @endphp
                         <div class="checkbox-item">

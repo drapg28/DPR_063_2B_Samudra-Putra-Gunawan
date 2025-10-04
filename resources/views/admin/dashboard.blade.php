@@ -1,3 +1,5 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -14,8 +16,8 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f8f9fa;
-            color: #2d3748;
+            background: #f4f5f7;
+            color: #1f2937;
             line-height: 1.6;
         }
 
@@ -23,7 +25,7 @@
         .navbar {
             background: #ffffff;
             padding: 1.25rem 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -32,8 +34,8 @@
 
         .navbar-brand {
             font-size: 1.25rem;
-            font-weight: 600;
-            color: #1a202c;
+            font-weight: 700;
+            color: #dc2626; /* Brand Color: Red */
             letter-spacing: -0.02em;
         }
 
@@ -48,18 +50,19 @@
         }
 
         .user-name {
-            font-weight: 500;
-            color: #2d3748;
+            font-weight: 600;
+            color: #1f2937;
             font-size: 0.9rem;
         }
 
         .user-role {
             font-size: 0.8rem;
-            color: #718096;
+            color: #6b7280;
         }
 
+        /* Color Scheme Fix: Change Logout Button to Red Accent */
         .btn-logout {
-            background: #2d3748;
+            background: #dc2626; /* Red */
             color: white;
             padding: 0.5rem 1.25rem;
             border: none;
@@ -71,7 +74,7 @@
         }
 
         .btn-logout:hover {
-            background: #1a202c;
+            background: #b91c1c; /* Darker Red */
             transform: translateY(-1px);
         }
 
@@ -84,21 +87,36 @@
 
         /* Welcome Section */
         .welcome {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem; /* Reduced margin to fit feedback */
+            padding: 1.5rem;
+            background: #ffffff;
+            border-radius: 8px;
+            border-left: 5px solid #dc2626; /* Red Accent */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .welcome h1 {
             font-size: 1.875rem;
-            font-weight: 600;
-            color: #1a202c;
+            font-weight: 700;
+            color: #1f2937;
             margin-bottom: 0.5rem;
             letter-spacing: -0.02em;
         }
 
         .welcome p {
-            color: #718096;
+            color: #6b7280;
             font-size: 1rem;
         }
+        
+        /* DOM Feedback Style (NEW) */
+        .feedback {
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            /* Default display is none in HTML */
+        }
+
 
         /* Stats Grid */
         .stats-grid {
@@ -117,12 +135,12 @@
         }
 
         .stat-card:hover {
-            border-color: #cbd5e0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: #dc2626; /* Red Border on hover */
+            box-shadow: 0 4px 12px rgba(220,38,38,0.1);
         }
 
         .stat-label {
-            color: #718096;
+            color: #6b7280;
             font-size: 0.875rem;
             margin-bottom: 0.75rem;
             font-weight: 500;
@@ -130,8 +148,8 @@
 
         .stat-value {
             font-size: 2.25rem;
-            font-weight: 600;
-            color: #1a202c;
+            font-weight: 700;
+            color: #1f2937;
         }
 
         /* Menu Section */
@@ -141,8 +159,8 @@
 
         .section-title {
             font-size: 1.125rem;
-            font-weight: 600;
-            color: #1a202c;
+            font-weight: 700;
+            color: #1f2937;
             margin-bottom: 1.5rem;
             letter-spacing: -0.01em;
         }
@@ -163,10 +181,11 @@
             transition: all 0.2s;
             display: block;
             position: relative;
+            cursor: pointer; /* Menandakan elemen interaktif */
         }
 
         .menu-card:hover {
-            border-color: #2d3748;
+            border-color: #dc2626; /* Red Border on hover */
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.08);
         }
@@ -181,17 +200,18 @@
         .menu-icon {
             width: 44px;
             height: 44px;
-            background: #f7fafc;
+            background: #fef2f2; /* Light Red Background */
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            color: #dc2626; /* Red Icon */
         }
 
         .menu-badge {
-            background: #edf2f7;
-            color: #4a5568;
+            background: #fef2f2;
+            color: #dc2626;
             padding: 0.25rem 0.75rem;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -202,117 +222,15 @@
 
         .menu-title {
             font-size: 1.125rem;
-            font-weight: 600;
-            color: #1a202c;
+            font-weight: 700;
+            color: #1f2937;
             margin-bottom: 0.5rem;
         }
 
         .menu-description {
             font-size: 0.875rem;
-            color: #718096;
+            color: #6b7280;
             line-height: 1.6;
-        }
-
-        /* Info Grid */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .info-card {
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 1.75rem;
-        }
-
-        .info-card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 1.25rem;
-        }
-
-        .info-list {
-            list-style: none;
-        }
-
-        .info-item {
-            padding: 0.875rem 0;
-            border-bottom: 1px solid #f7fafc;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .info-item:last-child {
-            border-bottom: none;
-        }
-
-        .info-label {
-            color: #718096;
-            font-size: 0.875rem;
-        }
-
-        .info-value {
-            font-weight: 500;
-            color: #2d3748;
-            font-size: 0.875rem;
-        }
-
-        .status-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #2d3748;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: #48bb78;
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Quick Links */
-        .quick-links {
-            list-style: none;
-        }
-
-        .quick-link {
-            padding: 0.875rem 0;
-            border-bottom: 1px solid #f7fafc;
-            color: #4a5568;
-            font-size: 0.875rem;
-            transition: color 0.2s;
-        }
-
-        .quick-link:last-child {
-            border-bottom: none;
-        }
-
-        .quick-link:hover {
-            color: #c22323ff;
-        }
-
-        .quick-link::before {
-            content: '→';
-            margin-right: 0.5rem;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .quick-link:hover::before {
-            opacity: 1;
         }
 
         /* Responsive */
@@ -338,8 +256,7 @@
             }
 
             .stats-grid,
-            .menu-grid,
-            .info-grid {
+            .menu-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -347,30 +264,31 @@
 </head>
 <body>
 
-    <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-brand">Gaji DPR RI</div>
-        <div class="navbar-user">
-            <div class="user-info">
-                <div class="user-name">Admin DPR</div>
-                <div class="user-role">Administrator</div>
+        <div class="navbar-content">
+            <div class="navbar-brand">Gaji DPR RI</div>
+            <div class="navbar-user">
+                <div class="user-info">
+                    <div class="user-name">Admin DPR</div>
+                    <div class="user-role">Administrator</div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn-logout">Logout</button>
+                </form>
             </div>
-            <form method="POST" action="/logout" style="display: inline;">
-                <button type="submit" class="btn-logout">Logout</button>
-            </form>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container">
         
-        <!-- Welcome -->
         <div class="welcome">
             <h1>Selamat Datang, Admin</h1>
             <p>Sistem Manajemen Transparansi Gaji DPR RI</p>
         </div>
 
-        <!-- Statistics -->
+        <div id="action-feedback" class="feedback" style="display: none;"></div>
+
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-label">Total Anggota DPR</div>
@@ -393,15 +311,14 @@
             </div>
         </div>
 
-        <!-- Menu Section -->
         <div class="section">
             <h2 class="section-title">Menu Administrasi</h2>
             <div class="menu-grid">
                 
-                <a href="/admin/anggota" class="menu-card">
+                <a href="{{ route('anggota.index') }}" class="menu-card">
                     <div class="menu-card-header">
                         <div class="menu-icon">👥</div>
-                        <div class="menu-badge">CRUD</div>
+                        <div class="menu-badge">DATA MASTER</div>
                     </div>
                     <div class="menu-title">Manajemen Anggota DPR</div>
                     <div class="menu-description">
@@ -409,10 +326,10 @@
                     </div>
                 </a>
 
-                <a href="/admin/salary-components" class="menu-card">
+                <a href="{{ route('salary-components.index') }}" class="menu-card">
                     <div class="menu-card-header">
                         <div class="menu-icon">💰</div>
-                        <div class="menu-badge">CRUD</div>
+                        <div class="menu-badge">DATA MASTER</div>
                     </div>
                     <div class="menu-title">Komponen Gaji & Tunjangan</div>
                     <div class="menu-description">
@@ -420,61 +337,48 @@
                     </div>
                 </a>
 
-                <a href="/admin/payrolls" class="menu-card">
+                <a href="{{ route('payrolls.index') }}" class="menu-card">
                     <div class="menu-card-header">
                         <div class="menu-icon">📊</div>
-                        <div class="menu-badge">Laporan</div>
+                        <div class="menu-badge">TRANSAKSI</div>
                     </div>
-                    <div class="menu-title">Data Penggajian</div>
+                    <div class="menu-title">Data Penggajian & THP</div>
                     <div class="menu-description">
-                        Hitung dan kelola catatan penggajian bulanan/tahunan termasuk Take Home Pay.
+                        Kelola catatan penggajian, hitung Take Home Pay (THP), dan lihat detail komponen.
                     </div>
                 </a>
 
             </div>
         </div>
 
-        <!-- Info Grid -->
-        <div class="info-grid">
-            
-            <div class="info-card">
-                <h3 class="info-card-title">Informasi Sistem</h3>
-                <ul class="info-list">
-                    <li class="info-item">
-                        <span class="info-label">Framework</span>
-                        <span class="info-value">Laravel 9.x</span>
-                    </li>
-                    <li class="info-item">
-                        <span class="info-label">PHP Version</span>
-                        <span class="info-value">8.1</span>
-                    </li>
-                    <li class="info-item">
-                        <span class="info-label">Database</span>
-                        <span class="info-value">MySQL</span>
-                    </li>
-                    <li class="info-item">
-                        <span class="info-label">Status</span>
-                        <span class="status-indicator">
-                            <span class="status-dot"></span>
-                            Online
-                        </span>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="info-card">
-                <h3 class="info-card-title">Quick Access</h3>
-                <ul class="quick-links">
-                    <li class="quick-link">Tambah Anggota Baru</li>
-                    <li class="quick-link">Cari Anggota</li>
-                    <li class="quick-link">Pengaturan Profil</li>
-                    <li class="quick-link">Laporan Bulanan</li>
-                </ul>
-            </div>
-
-        </div>
-
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuCards = document.querySelectorAll('.menu-card');
+            const feedbackDiv = document.getElementById('action-feedback');
 
+            menuCards.forEach(card => {
+                card.addEventListener('click', function(event) {
+                    event.preventDefault(); 
+                    
+                    const title = card.querySelector('.menu-title').textContent;
+                    const href = card.getAttribute('href');
+                    
+                    feedbackDiv.textContent = 'Membuka modul: "' + title + '". Mohon Tunggu...';
+                    
+                    feedbackDiv.style.display = 'block';
+                    feedbackDiv.style.background = '#f8d7da';
+                    feedbackDiv.style.color = '#721c24';
+                    feedbackDiv.style.borderColor = '#f5c6cb';
+                    feedbackDiv.style.border = '1px solid #f5c6cb';
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 1000); 
+                });
+            });
+        });
+    </script>
 </body>
 </html>

@@ -26,7 +26,7 @@ class AuthenticatedSessionController extends Controller
             $user = Auth::user();
             
             \Log::info('Login Debug', [
-                'user_id' => $user->id_pengguna,
+                'user_id' => $user->id,
                 'email' => $user->email,
                 'role' => $user->role,
             ]);
@@ -35,11 +35,12 @@ class AuthenticatedSessionController extends Controller
             
             if ($role === 'Admin') {
                 \Log::info('Redirecting to admin dashboard');
-                return redirect('/admin/dashboard');
+                return redirect(RouteServiceProvider::ADMIN_DASHBOARD);
             }
 
-            \Log::info('Redirecting to user dashboard');
-            return redirect('/dashboard');
+            // Redirect Public ke Public Dashboard
+            \Log::info('Redirecting to public dashboard');
+            return redirect(RouteServiceProvider::HOME);
             
         } catch (\Exception $e) {
             \Log::error('Login error: ' . $e->getMessage());

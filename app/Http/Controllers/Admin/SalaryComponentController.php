@@ -18,6 +18,7 @@ class SalaryComponentController extends Controller
     public function index(Request $request)
     {
         $query = KomponenGaji::query();
+
         if ($search = $request->input('search')) {
             $query->where('nama_komponen', 'like', "%{$search}%")
                   ->orWhere('kategori', 'like', "%{$search}%")
@@ -64,5 +65,38 @@ class SalaryComponentController extends Controller
         return redirect()->route('salary-components.index')->with('success', 'Komponen Gaji "' . $request->nama_komponen . '" berhasil ditambahkan.');
     }
 
-    
+    /**
+     * Show the form for editing the specified resource (Tampilkan form Ubah Data).
+     */
+    public function edit($id_komponen_gaji)
+    {
+        $component = KomponenGaji::findOrFail($id_komponen_gaji);
+        $categories = ['Gaji Pokok', 'Tunjangan Melekat', 'Tunjangan Lain'];
+        $positions = ['Ketua', 'Wakil Ketua', 'Anggota', 'Semua'];
+        $units = ['Bulan', 'Hari', 'Periode'];
+
+        return view('admin.salary-components.edit', compact('component', 'categories', 'positions', 'units'));
+    }
+
+    /**
+     * Update the specified resource in storage (Simpan perubahan data - Update).
+     */
+    public function update(Request $request, $id_komponen_gaji)
+    {
+        $component = KomponenGaji::findOrFail($id_komponen_gaji);
+
+        // Validasi dengan rule [cite: 103]
+        $request->validate([
+            'nama_komponen' => 'required|string|max:100',
+            'kategori' => 'required|in:Gaji Pokok,Tunjangan Melekat,Tunjangan Lain',
+            'jabatan' => 'required|in:Ketua,Wakil Ketua,Anggota,Semua',
+            'nominal' => 'required|numeric|min:0',
+            'satuan' => 'required|in:Bulan,Hari,Periode',
+        ]);
+        
+        $component->update($request->all());
+
+        return redirect()->route('salary-components.index')->with('success', 'Komponen Gaji "' . $component->nama_komponen . '" berhasil diperbarui.');
+    }
+
 }

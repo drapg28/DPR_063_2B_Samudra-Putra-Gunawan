@@ -67,18 +67,23 @@ class AnggotaDPRController extends Controller
      * Show the form for editing the specified resource (Tampilkan form Ubah Data).
      * Menggunakan Route Model Binding untuk AnggotaDPR $anggota.
      */
-    public function edit(AnggotaDPR $anggota)
+     public function edit($id_anggota) // Ubah menjadi menerima ID eksplisit
     {
+        // Cari data berdasarkan ID, jika tidak ada, lempar 404
+        $anggota = AnggotaDPR::findOrFail($id_anggota);
         return view('admin.anggota.edit', compact('anggota'));
     }
 
     /**
      * Update the specified resource in storage (Simpan perubahan data - Update).
      */
-    public function update(Request $request, AnggotaDPR $anggota)
+    public function update(Request $request, $id_anggota) // Ubah menjadi menerima ID eksplisit
     {
+        $anggota = AnggotaDPR::findOrFail($id_anggota); // Cari model dulu
+
         // Validasi
         $request->validate([
+            // ... (validation rules here)
             'nama_depan' => 'required|string|max:100',
             'nama_belakang' => 'nullable|string|max:100',
             'gelar_depan' => 'nullable|string|max:50',
@@ -91,22 +96,5 @@ class AnggotaDPRController extends Controller
         $anggota->update($request->all());
 
         return redirect()->route('anggota.index')->with('success', 'Data Anggota ' . $anggota->nama_lengkap . ' berhasil diperbarui.');
-    }
-
-    /**
-     * Remove the specified resource from storage (Hapus Data - Delete).
-     */
-    public function destroy(AnggotaDPR $anggota)
-    {
-        $anggota_name = $anggota->nama_lengkap; 
-        
-        // PENTING: Karena tidak menggunakan migrasi, kita asumsikan database
-        // sudah diatur untuk CASCADE ON DELETE di tabel `penggajian`.
-        // Jika tidak, hapus data penggajian terkait harus dilakukan manual sebelum
-        // AnggotaDPR::delete() untuk menghindari error foreign key.
-        
-        $anggota->delete();
-        
-        return redirect()->route('anggota.index')->with('success', 'Data Anggota ' . $anggota_name . ' berhasil dihapus.');
     }
 }

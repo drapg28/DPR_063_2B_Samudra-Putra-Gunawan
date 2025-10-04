@@ -12,36 +12,36 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Tampilkan tampilan login.
-     */
     public function create(): View
     {
         return view('auth.login');
     }
-        public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
 
+    public function store(LoginRequest $request): RedirectResponse
+{
+    try {
+        $request->authenticate();
         $request->session()->regenerate();
 
-        // Logika Pengalihan (Redirect) Berdasarkan Role
-        if (Auth::user()->role === 'admin') {
-            // Ganti pengalihan ke konstanta URL dengan menggunakan nama rute (lebih andal) [!code focus]
-            return redirect()->intended(route('admin.dashboard')); // [!code focus]
+        // Debug: Log user info
+        \Log::info('Login successful for user: ' . Auth::user()->email . ' with role: ' . Auth::user()->role);
+
+        // Redirect berdasarkan role
+        if (Auth::user()->role === 'Admin') {
+            return redirect()->intended('/admin/dashboard');
         }
 
-        // Jika role adalah 'public' atau role lainnya, alihkan ke dashboard default
-        return redirect()->intended(RouteServiceProvider::HOME);
+        return redirect()->intended('/dashboard');
+    } catch (\Exception $e) {
+        \Log::error('Login failed: ' . $e->getMessage());
+        return back()->withErrors(['email' => 'Login gagal. Silakan coba lagi.']);
     }
-
- 
+}
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');

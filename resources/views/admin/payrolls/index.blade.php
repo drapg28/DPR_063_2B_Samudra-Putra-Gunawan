@@ -235,7 +235,7 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+             <tbody>
                 @forelse ($payrolls as $item)
                     <tr>
                         <td>{{ $item->id_anggota }}</td>

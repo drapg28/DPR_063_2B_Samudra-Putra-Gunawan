@@ -16,16 +16,15 @@ class PayrollController extends Controller
     }
 
     /**
-     * Display a listing of the resource (Lihat Data Penggajian - Grouping & Pagination).
+     * Display a listing of the resource (Lihat Data Penggajian - Index).
      */
     public function index(Request $request)
     {
-        // Mendapatkan semua anggota DPR dan menghitung jumlah komponen gaji yang terkait
         $query = AnggotaDPR::select('anggota.*')
             ->selectRaw('COUNT(penggajian.id_komponen_gaji) as total_komponen')
             ->leftJoin('penggajian', 'anggota.id_anggota', '=', 'penggajian.id_anggota');
             
-        // Pencarian berdasarkan Nama Depan atau Nama Belakang
+        // Pencarian
         if ($search = $request->input('search')) {
             $query->where(function($q) use ($search) {
                 $q->where('nama_depan', 'like', "%{$search}%")
@@ -33,7 +32,7 @@ class PayrollController extends Controller
             });
         }
         
-        // KOREKSI: Tambahkan SEMUA kolom non-agregasi ke GROUP BY
+        // KOREKSI UTAMA: Mencantumkan semua kolom non-agregasi ke GROUP BY
         $query->groupBy(
             'anggota.id_anggota',
             'anggota.nama_depan',
@@ -120,5 +119,62 @@ class PayrollController extends Controller
 
         return redirect()->route('payrolls.index')->with('success', 'Data Penggajian untuk ' . $anggota->nama_lengkap . ' berhasil ditambahkan.');
     }
+    
+    
+    /**
+     * Show the form for editing the specified resource (Tampilkan form Ubah Data).
+     */
+    public function edit($id_anggota) {
+        $anggota = AnggotaDPR::findOrFail($id_anggota);
+        $components = KomponenGaji::all();
+        $selected_components = Penggajian::where('id_anggota', $id_anggota)->pluck('id_komponen_gaji')->toArray();
+        
+        return view('admin.payrolls.edit', compact('anggota', 'components', 'selected_components'));
+    }
+
+    /**
+     * Update the specified resource in storage (Simpan perubahan data).
+     */
+    public function update(Request $request, $id_anggota) {
+        $request->validate([
+            'id_komponen_gaji' => 'required|array',
+            'id_komponen_gaji.*' => 'exists:komponen_gaji,id_komponen_gaji',
+        ], [
+            'id_komponen_gaji.required' => 'Minimal satu Komponen Gaji harus dipilih.',
+        ]);
+
+        $anggota = AnggotaDPR::findOrFail($id_anggota);
+        $komponen_gaji_terpilih = $request->id_komponen_gaji;
+
+        // 1. Validasi Komponen Gaji Berdasarkan Jabatan
+        $komponen_tidak_sah = KomponenGaji::whereIn('id_komponen_gaji', $komponen_gaji_terpilih)
+            ->where('jabatan', '!=', 'Semua')
+            ->where('jabatan', '!=', $anggota->jabatan)
+            ->pluck('nama_komponen');
+
+        if ($komponen_tidak_sah->isNotEmpty()) {
+            return back()->withInput()->withErrors([
+                'id_komponen_gaji' => 'Komponen gaji berikut tidak sah untuk jabatan ' . $anggota->jabatan . ': ' . $komponen_tidak_sah->implode(', ')
+            ]);
+        }
+        
+        // 2. Hapus semua data lama dan insert data baru
+        Penggajian::where('id_anggota', $id_anggota)->delete();
+        
+        $data_to_insert = [];
+        foreach ($komponen_gaji_terpilih as $komponen_id) {
+            $data_to_insert[] = [
+                'id_anggota' => $anggota->id_anggota,
+                'id_komponen_gaji' => $komponen_id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+        
+        Penggajian::insert($data_to_insert);
+
+        return redirect()->route('payrolls.index')->with('success', 'Data Penggajian untuk ' . $anggota->nama_lengkap . ' berhasil diperbarui.');
+    }
+    
     
 }

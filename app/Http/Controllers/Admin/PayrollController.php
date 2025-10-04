@@ -185,4 +185,54 @@ class PayrollController extends Controller
         return redirect()->route('payrolls.index')->with('success', 'Data penggajian berhasil dihapus.');
     }
     
+    /**
+     * Display the specified resource (Lihat Detail Data Penggajian & Hitung THP).
+     */
+    public function show($id_anggota)
+    {
+        $anggota = AnggotaDPR::findOrFail($id_anggota);
+        $related_components = $anggota->komponenGaji()->get();
+        
+        $total_gaji_bulan = 0;
+        $total_gaji_periode = 0;
+        $component_details = [];
+        
+        foreach ($related_components as $component) {
+            $nominal = (float) $component->nominal;
+            $calculated_value = 0;
+            
+            // Logika THP
+            if ($component->nama_komponen == 'Tunjangan Istri/Suami') { 
+                $calculated_value = ($anggota->status_pernikahan == 'Kawin') ? $nominal : 0;
+            } elseif ($component->nama_komponen == 'Tunjangan Anak') { 
+                $jumlah_anak_dihitung = min(2, $anggota->jumlah_anak); 
+                $calculated_value = $nominal * $jumlah_anak_dihitung;
+            } else {
+                $calculated_value = $nominal;
+            }
+            
+            $component_details[] = (object)[
+                'nama_komponen' => $component->nama_komponen,
+                'kategori' => $component->kategori,
+                'satuan' => $component->satuan,
+                'nominal_dasar' => $nominal, 
+                'nominal_terhitung' => $calculated_value,
+            ];
+
+            if ($component->satuan == 'Bulan') {
+                $total_gaji_bulan += $calculated_value;
+            } elseif ($component->satuan == 'Periode') {
+                $total_gaji_periode += $calculated_value;
+            }
+        }
+
+        $thp_bulanan = $total_gaji_bulan;
+
+        return view('admin.payrolls.show', compact(
+            'anggota',
+            'component_details',
+            'thp_bulanan',
+            'total_gaji_periode'
+        ));
+    }
 }

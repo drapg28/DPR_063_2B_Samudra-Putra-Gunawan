@@ -99,4 +99,16 @@ class SalaryComponentController extends Controller
         return redirect()->route('salary-components.index')->with('success', 'Komponen Gaji "' . $component->nama_komponen . '" berhasil diperbarui.');
     }
 
+    /**
+     * Remove the specified resource from storage (Hapus Data - Delete).
+     */
+    public function destroy($id_komponen_gaji)
+    {
+        $component = KomponenGaji::findOrFail($id_komponen_gaji);
+        $component_name = $component->nama_komponen; 
+        
+        $component->delete();
+        
+        return redirect()->route('salary-components.index')->with('success', 'Komponen Gaji "' . $component_name . '" berhasil dihapus.');
+    }
 }

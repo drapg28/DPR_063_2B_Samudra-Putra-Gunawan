@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AnggotaDPRController;
-use App\Http\Controllers\Admin\SalaryComponentController; // <-- BARIS BARU: Import Controller Komponen Gaji
+use App\Http\Controllers\Admin\SalaryComponentController;
+use App\Http\Controllers\Admin\PayrollController;
 use App\Http\Controllers\ProfileController;
 
 // Welcome page
@@ -41,14 +42,18 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
     
-    // Anggota DPR CRUD
     Route::resource('anggota', AnggotaDPRController::class);
     
-    // Komponen Gaji CRUD <-- BARIS KOREKSI
+    // Komponen Gaji CRUD
     Route::resource('salary-components', SalaryComponentController::class);
     
-    // Placeholder routes untuk Penggajian
-    Route::get('payrolls', function() {
-        return view('admin.dashboard');
-    })->name('payrolls.index');
+    // Penggajian CRUD (Kita menggunakan resource untuk index, create, store)
+    Route::resource('payrolls', PayrollController::class)->only(['index', 'create', 'store']);
+    
+    // Rute Show, Edit, Update, Destroy (menggunakan ID Anggota sebagai parameter)
+    Route::get('/payrolls/{id_anggota}', [PayrollController::class, 'show'])->name('payrolls.show');
+    Route::get('/payrolls/{id_anggota}/edit', [PayrollController::class, 'edit'])->name('payrolls.edit');
+    Route::put('/payrolls/{id_anggota}', [PayrollController::class, 'update'])->name('payrolls.update');
+    Route::delete('/payrolls/{id_anggota}', [PayrollController::class, 'destroy'])->name('payrolls.destroy');
 });
+

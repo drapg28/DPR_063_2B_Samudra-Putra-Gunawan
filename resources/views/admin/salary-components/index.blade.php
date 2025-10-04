@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Anggota DPR</title>
+    <title>Manajemen Komponen Gaji</title>
     <style>
         body { font-family: sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
         
@@ -94,11 +94,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: 800px;
             margin-top: 1rem;
         }
         th, td {
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1.0rem;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
             font-size: 0.875rem;
@@ -129,12 +129,50 @@
         .link-delete:hover { color: #b91c1c; }
         .text-center { text-align: center; }
         .inline-form { display: inline; }
-        .pagination-container { margin-top: 1.5rem; }
+        
+        /* Pagination Styles */
+        .pagination-container { 
+            margin-top: 1.5rem; 
+        }
+        .pagination-container .pagination-nav {
+            display: flex;
+            justify-content: space-between; /* Pisahkan summary dan links */
+            align-items: center;
+            width: 100%;
+        }
+        .pagination-summary {
+            color: #4b5563;
+            font-size: 0.875rem;
+        }
+        .pagination-links {
+            display: flex;
+            gap: 0.5rem; /* Jarak antar tombol/link */
+        }
+        .pagination-link {
+            display: inline-block;
+            padding: 0.5rem 0.75rem;
+            line-height: 1.25;
+            color: #4f46e5;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            text-decoration: none;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .pagination-link:hover:not(.disabled) {
+            background-color: #f3f4f6;
+        }
+        .pagination-link.disabled {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
     </style>
 </head>
 <body>
 
-{{-- Simplified Navigation for Admin --}}
 @auth
     <nav class="navbar">
         <div class="navbar-content">
@@ -153,7 +191,7 @@
 
 <header class="header">
     <div class="header-content">
-        <h2>{{ __('Manajemen Anggota DPR') }}</h2>
+        <h2>{{ __('Manajemen Komponen Gaji & Tunjangan') }}</h2>
     </div>
 </header>
 
@@ -172,12 +210,12 @@
         @endif
 
         <div class="header-section">
-            <a href="{{ route('anggota.create') }}" class="btn btn-red">
-                Tambah Anggota
+            <a href="{{ route('salary-components.create') }}" class="btn btn-red">
+                Tambah Komponen
             </a>
             
-            <form method="GET" action="{{ route('anggota.index') }}" class="search-form">
-                <input id="search" name="search" type="text" class="form-input" placeholder="Cari Nama, Jabatan, atau ID..." value="{{ (string) request('search') }}" />
+            <form method="GET" action="{{ route('salary-components.index') }}" class="search-form">
+                <input id="search" name="search" type="text" class="form-input" placeholder="Cari Nama, Kategori, Jabatan, Nominal..." value="{{ (string) request('search') }}" />
                 <button type="submit" class="btn btn-blue">Cari</button>
             </form>
         </div>
@@ -186,22 +224,26 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nama Lengkap</th>
+                    <th>Nama Komponen</th>
+                    <th>Kategori</th>
                     <th>Jabatan</th>
-                    <th>Status & Anak</th>
+                    <th>Nominal</th>
+                    <th>Satuan</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                @forelse ($anggota as $item)
+                @forelse ($components as $item)
                     <tr>
-                        <td>{{ $item->id_anggota }}</td>
-                        <td>{{ $item->nama_lengkap }}</td>
+                        <td>{{ $item->id_komponen_gaji }}</td>
+                        <td>{{ $item->nama_komponen }}</td>
+                        <td>{{ $item->kategori }}</td>
                         <td>{{ $item->jabatan }}</td>
-                        <td>{{ $item->status_pernikahan }} ({{ $item->jumlah_anak }} Anak)</td>
+                        <td>{{ number_format((float)$item->nominal, 2, ',', '.') }}</td>
+                        <td>{{ $item->satuan }}</td>
                         <td>
-                            <a href="{{ route('anggota.edit', $item->id_anggota) }}" class="link-action link-edit">Ubah</a>
-                            <form action="{{ route('anggota.destroy', $item->id_anggota) }}" method="POST" class="inline-form" onsubmit="return confirm('PERINGATAN: Menghapus anggota akan menghapus semua data penggajian terkait. Apakah Anda yakin ingin menghapus data anggota ini?');">
+                            <a href="{{ route('salary-components.edit', $item->id_komponen_gaji) }}" class="link-action link-edit">Ubah</a>
+                            <form action="{{ route('salary-components.destroy', $item->id_komponen_gaji) }}" method="POST" class="inline-form" onsubmit="return confirm('PERINGATAN: Menghapus komponen gaji akan menghapus semua data penggajian terkait. Apakah Anda yakin ingin menghapus komponen ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="link-delete">Hapus</button>
@@ -210,8 +252,8 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center" style="color: #6b7280;">
-                            Tidak ada data anggota DPR yang ditemukan.
+                        <td colspan="7" class="text-center" style="color: #6b7280;">
+                            Tidak ada data komponen gaji yang ditemukan.
                         </td>
                     </tr>
                 @endforelse
@@ -219,8 +261,9 @@
         </table>
 
         <div class="pagination-container">
-            {{ $anggota->links() }}
+            {{ $components->links('pagination::admin-simple') }}
         </div>
+        
     </div>
 </div>
 

@@ -83,7 +83,6 @@ class AnggotaDPRController extends Controller
 
         // Validasi
         $request->validate([
-            // ... (validation rules here)
             'nama_depan' => 'required|string|max:100',
             'nama_belakang' => 'nullable|string|max:100',
             'gelar_depan' => 'nullable|string|max:50',
@@ -97,4 +96,15 @@ class AnggotaDPRController extends Controller
 
         return redirect()->route('anggota.index')->with('success', 'Data Anggota ' . $anggota->nama_lengkap . ' berhasil diperbarui.');
     }
+
+
+    public function destroy($id_anggota) 
+        {
+            $anggota = AnggotaDPR::findOrFail($id_anggota);
+        
+            $anggota_name = $anggota->nama_lengkap; 
+            $anggota->delete();
+        
+            return redirect()->route('anggota.index')->with('success', 'Data Anggota ' . $anggota_name . ' berhasil dihapus.');
+        }
 }

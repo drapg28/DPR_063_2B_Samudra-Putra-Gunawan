@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AnggotaDPRController;
+use App\Http\Controllers\Admin\SalaryComponentController; // <-- BARIS BARU: Import Controller Komponen Gaji
 use App\Http\Controllers\ProfileController;
 
 // Welcome page
@@ -40,13 +41,13 @@ Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
     
+    // Anggota DPR CRUD
     Route::resource('anggota', AnggotaDPRController::class);
     
-    // Placeholder routes
-    Route::get('salary-components', function() {
-        return view('admin.dashboard');
-    })->name('salary-components.index');
+    // Komponen Gaji CRUD <-- BARIS KOREKSI
+    Route::resource('salary-components', SalaryComponentController::class);
     
+    // Placeholder routes untuk Penggajian
     Route::get('payrolls', function() {
         return view('admin.dashboard');
     })->name('payrolls.index');

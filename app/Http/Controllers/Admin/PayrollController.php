@@ -176,5 +176,13 @@ class PayrollController extends Controller
         return redirect()->route('payrolls.index')->with('success', 'Data Penggajian untuk ' . $anggota->nama_lengkap . ' berhasil diperbarui.');
     }
     
+    /**
+     * Remove the specified resource from storage (Hapus Data).
+     */
+    public function destroy($id_anggota) {
+        Penggajian::where('id_anggota', $id_anggota)->delete();
+        
+        return redirect()->route('payrolls.index')->with('success', 'Data penggajian berhasil dihapus.');
+    }
     
 }

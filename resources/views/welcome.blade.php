@@ -4,22 +4,42 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Selamat Datang - Aplikasi Gaji DPR</title>
-    <!-- Memuat Tailwind CSS untuk tampilan -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Nunito', sans-serif; }
+        .alert {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="antialiased bg-gray-50">
+    
+    <!-- Alert Logout Success -->
+    @if(session('status'))
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 1000; max-width: 400px;">
+        <div class="alert">
+            ✓ {{ session('status') }}
+        </div>
+    </div>
+    @endif
+
     <div class="relative flex items-top justify-center min-h-screen sm:items-center py-4 sm:pt-0">
         
         <!-- Navbar/Auth Links -->
         <div class="fixed top-0 right-0 px-6 py-4 sm:block">
             @auth
-                <!-- Jika sudah login, tampilkan tombol ke Dashboard -->
                 <a href="{{ url('/admin/dashboard') }}" class="text-sm text-gray-700 underline hover:text-red-600">Dashboard</a>
             @else
-                <!-- Jika belum login, tampilkan link Login -->
                 <a href="{{ route('login') }}" class="text-sm text-gray-700 underline hover:text-red-600">Log in</a>
             @endif
         </div>
@@ -66,5 +86,19 @@
             </div>
         </div>
     </div>
+
+    <!-- Auto hide alert after 3 seconds -->
+    @if(session('status'))
+    <script>
+        setTimeout(function() {
+            const alert = document.querySelector('.alert');
+            if(alert) {
+                alert.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => alert.remove(), 300);
+            }
+        }, 3000);
+    </script>
+    @endif
+
 </body>
 </html>

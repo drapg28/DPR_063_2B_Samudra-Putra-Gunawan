@@ -16,7 +16,6 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            // GANTI dari App\Models\User ke App\Models\Pengguna
             'model' => App\Models\Pengguna::class,
         ],
     ],

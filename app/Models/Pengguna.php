@@ -10,13 +10,8 @@ class Pengguna extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-    // Nama tabel sesuai database
     protected $table = 'pengguna';
-    
-    // Primary key
     protected $primaryKey = 'id_pengguna';
-    
-    // Aktifkan timestamps karena database memiliki created_at/updated_at
     public $timestamps = true;
 
     protected $fillable = [
@@ -34,12 +29,18 @@ class Pengguna extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
+
+    // HAPUS setPasswordAttribute - ini bikin password di-hash 2x!
+    // public function setPasswordAttribute($value) { ... }
     
-    // Override untuk Laravel Auth
     public function getAuthIdentifierName()
     {
         return 'id_pengguna';
+    }
+
+    public function getNamaLengkapAttribute()
+    {
+        return $this->nama_depan . ' ' . $this->nama_belakang;
     }
 }

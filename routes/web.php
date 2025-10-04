@@ -4,33 +4,22 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AnggotaDPRController;
 use App\Http\Controllers\ProfileController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes - PASTIKAN SEMUA MENGGUNAKAN MIDDLEWARE WEB
-|--------------------------------------------------------------------------
-*/
-
 // Welcome page
 Route::get('/', function () {
     return view('welcome');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Auth Routes - LOAD DARI auth.php (SUDAH ADA MIDDLEWARE WEB)
-|--------------------------------------------------------------------------
-*/
+// Load auth routes
 require __DIR__.'/auth.php';
 
-/*
-|--------------------------------------------------------------------------
-| Rute yang membutuhkan autentikasi
-|--------------------------------------------------------------------------
-*/
+// User Dashboard (authenticated users)
 Route::middleware(['auth'])->group(function () {
     
-    // Dashboard default untuk user biasa
     Route::get('/dashboard', function () {
+        \Log::info('Dashboard accessed', [
+            'user' => auth()->user()->email,
+            'role' => auth()->user()->role
+        ]);
         return view('dashboard');
     })->name('dashboard');
 
@@ -40,25 +29,24 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Rute Admin (CRUD Penuh)
-|--------------------------------------------------------------------------
-*/
+// Admin Routes - PENTING: role harus 'Admin' (case-sensitive sesuai database)
 Route::middleware(['auth', 'role:Admin'])->prefix('admin')->group(function () {
     
     Route::get('/dashboard', function () {
+        \Log::info('Admin dashboard accessed', [
+            'user' => auth()->user()->email,
+            'role' => auth()->user()->role
+        ]);
         return view('admin.dashboard');
     })->name('admin.dashboard');
     
     Route::resource('anggota', AnggotaDPRController::class);
     
-    // Placeholder routes untuk salary-components
+    // Placeholder routes
     Route::get('salary-components', function() {
         return view('admin.dashboard');
     })->name('salary-components.index');
     
-    // Placeholder routes untuk payrolls
     Route::get('payrolls', function() {
         return view('admin.dashboard');
     })->name('payrolls.index');

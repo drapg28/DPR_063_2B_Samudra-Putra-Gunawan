@@ -18,32 +18,44 @@ class AuthenticatedSessionController extends Controller
     }
 
     public function store(LoginRequest $request): RedirectResponse
-{
-    try {
-        $request->authenticate();
-        $request->session()->regenerate();
+    {
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
 
-        // Debug: Log user info
-        \Log::info('Login successful for user: ' . Auth::user()->email . ' with role: ' . Auth::user()->role);
+            $user = Auth::user();
+            
+            \Log::info('Login Debug', [
+                'user_id' => $user->id_pengguna,
+                'email' => $user->email,
+                'role' => $user->role,
+            ]);
 
-        // Redirect berdasarkan role
-        if (Auth::user()->role === 'Admin') {
-            return redirect()->intended('/admin/dashboard');
+            $role = trim($user->role);
+            
+            if ($role === 'Admin') {
+                \Log::info('Redirecting to admin dashboard');
+                return redirect('/admin/dashboard');
+            }
+
+            \Log::info('Redirecting to user dashboard');
+            return redirect('/dashboard');
+            
+        } catch (\Exception $e) {
+            \Log::error('Login error: ' . $e->getMessage());
+            return back()->withErrors([
+                'email' => 'Login gagal. ' . $e->getMessage()
+            ])->withInput();
         }
-
-        return redirect()->intended('/dashboard');
-    } catch (\Exception $e) {
-        \Log::error('Login failed: ' . $e->getMessage());
-        return back()->withErrors(['email' => 'Login gagal. Silakan coba lagi.']);
     }
-}
+
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect('/');
+        
+        // Redirect ke halaman welcome (/)
+        return redirect('/')->with('status', 'Anda telah berhasil logout.');
     }
 }

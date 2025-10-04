@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -8,16 +9,31 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (Auth::check() && Auth::user()->role === $role) {
+        // Debug log
+        \Log::info('CheckRole middleware', [
+            'authenticated' => Auth::check(),
+            'user' => Auth::user(),
+            'required_role' => $role,
+            'user_role' => Auth::check() ? Auth::user()->role : 'not authenticated'
+        ]);
+
+        if (!Auth::check()) {
+            \Log::warning('User not authenticated');
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        // Role checking - PENTING: Case-sensitive sesuai database
+        if (Auth::user()->role === $role) {
+            \Log::info('Role check passed');
             return $next($request);
         }
+
+        \Log::warning('Role check failed', [
+            'user_role' => Auth::user()->role,
+            'required_role' => $role
+        ]);
 
         return redirect('/')->with('error', 'Akses Ditolak: Anda tidak memiliki izin sebagai ' . $role . '.');
     }

@@ -20,12 +20,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Autentikasi (Login & Logout)
-|--------------------------------------------------------------------------
-*/
-// Rute untuk menampilkan form login (diberi nama 'login' untuk redirect/link)
+
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); 
 // Rute untuk memproses data login
 Route::post('/login', [AuthController::class, 'login']);
@@ -33,27 +28,16 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 
-/*
-|--------------------------------------------------------------------------
-| Rute Admin (CRUD Penuh) - Membutuhkan 'auth' & 'role:admin'
-|--------------------------------------------------------------------------
-*/
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     
-    // Dashboard Admin (Tujuan utama setelah login berhasil)
     Route::get('/dashboard', function () {
         return view('admin.dashboard'); 
     })->name('dashboard');
 
-    // CRUD Anggota DPR
     Route::resource('members', MemberController::class)->except(['show']);
 
-    // CRUD Komponen Gaji & Tunjangan
     Route::resource('salary-components', SalaryComponentController::class)->except(['show']);
-
-    // CRUD Data Penggajian
-    // Kita hapus metode index/show default di sini dan definisikan secara manual
-    // di bawah agar bisa menggunakan nama yang sama dengan public
+    
     Route::resource('payrolls', PayrollController::class)->except(['index', 'show']); 
     
     // Rute Tampilan Data Penggajian Admin (index & detail)
@@ -63,11 +47,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Rute Public (Client) - Akses Baca Saja (Read-Only)
-|--------------------------------------------------------------------------
-*/
 Route::middleware(['auth', 'role:public'])->group(function () {
 
     // Read Only Data Anggota
@@ -91,11 +70,6 @@ Route::middleware('auth')->group(function () {
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Rute Admin (CRUD Penuh)
-|--------------------------------------------------------------------------
-*/
 use App\Http\Controllers\Admin\AnggotaDPRController;
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
@@ -106,9 +80,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     })->name('admin.dashboard'); // Rute ADMIN_DASHBOARD
 
     // Contoh Rute CRUD Anggota DPR
-    // Perhatikan bahwa AnggotaDPRController memiliki middleware 'admin' di __construct
     Route::resource('anggota', AnggotaDPRController::class)->names('anggota');
     
-    // ... Tambahkan rute CRUD lainnya di sini (salary-components, payrolls)
 
 });

@@ -19,12 +19,7 @@ class AuthenticatedSessionController extends Controller
     {
         return view('auth.login');
     }
-
-    /**
-     * Tangani permintaan otentikasi masuk.
-     * Logika ini dimodifikasi untuk mengalihkan berdasarkan role user.
-     */
-    public function store(LoginRequest $request): RedirectResponse
+        public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
 
@@ -32,17 +27,15 @@ class AuthenticatedSessionController extends Controller
 
         // Logika Pengalihan (Redirect) Berdasarkan Role
         if (Auth::user()->role === 'admin') {
-            // Jika role adalah 'admin', alihkan ke dashboard admin
-            return redirect()->intended(RouteServiceProvider::ADMIN_DASHBOARD);
+            // Ganti pengalihan ke konstanta URL dengan menggunakan nama rute (lebih andal) [!code focus]
+            return redirect()->intended(route('admin.dashboard')); // [!code focus]
         }
 
         // Jika role adalah 'public' atau role lainnya, alihkan ke dashboard default
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
-    /**
-     * Hancurkan sesi (Logout).
-     */
+ 
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
